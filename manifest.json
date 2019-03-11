@@ -1,7 +1,7 @@
 {
   "name": "Whitaker's Words Helper",
   "short_name": "WWH",
-  "version": "1.0",
+  "version": "1.1",
   "description": "This extension uses the wonderful site designed by William Whitaker, to easily get detailed and accurate Latin definitions.",
   "permissions": ["contextMenus", "http://archives.nd.edu/"],
   "background": {
