@@ -5,14 +5,13 @@
   "description": "This extension uses the wonderful site designed by William Whitaker, to easily get detailed and accurate Latin definitions.",
   "permissions": ["contextMenus", "http://archives.nd.edu/"],
   "background": {
-    "scripts": ["jQuery.js", "background.js", "contextMenu.js"],
+    "scripts": ["background.js", "contextMenu.js"],
     "persistent": false
   },
   "content_scripts" : [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["jQuery.js", "script.js"],
-      "css": ["style.css"]
+      "js": ["script.js"]
     }
   ],
   "icons": {
