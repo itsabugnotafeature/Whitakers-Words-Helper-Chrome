@@ -28,7 +28,7 @@ document.addEventListener("dblclick", function(event) {
             pop_up_div.style.visibility = 'visible';
             pop_up_div.style.left = event.pageX.toString() + "px";
             pop_up_div.style.top = event.pageY.toString() + "px";
-            internal_pre.textContent = "";
+            internal_pre.textContent = "Loading Definition";
             chrome.runtime.sendMessage({query: text}, function(response) {
                 internal_pre.textContent = response.responseText;
                 var div_rect = pop_up_div.getBoundingClientRect();
@@ -62,3 +62,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
+function formatQuery(unformattedText) {
+    var urlText = encodeURIComponent(text);
+}

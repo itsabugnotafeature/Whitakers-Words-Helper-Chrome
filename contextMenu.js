@@ -13,7 +13,6 @@ var contextMenuItem = {
 chrome.contextMenus.create(contextMenuItem);
 
 chrome.contextMenus.onClicked.addListener(function(clickData) {
-                                          console.log("Context menu item clicked: " + clickData.menuItemId);
                                               if (clickData.menuItemId == "getDefs" && clickData.selectionText) {
                                                   var formattedText = clickData.selectionText;
                                                   formattedText = formattedText.replace(/ā/ig, 'a');
@@ -27,6 +26,8 @@ chrome.contextMenus.onClicked.addListener(function(clickData) {
                                                   if (numWords == 2) {
                                                     formattedText += "+et";
                                                   }
+                                          
+                                                  console.log("[" + formattedText + "]");
                                           
                                                   var url = "http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + formattedText;
                                           

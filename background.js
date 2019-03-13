@@ -6,18 +6,20 @@
 
 chrome.runtime.onMessage.addListener(
                                      function(request, sender, sendResponse) {
-                                     var formattedText = request.query;
-                                     formattedText = formattedText.replace(/ā/ig, 'a');
-                                     formattedText = formattedText.replace(/ē/ig, 'e');
-                                     formattedText = formattedText.replace(/ī/ig, 'i');
-                                     formattedText = formattedText.replace(/ō/ig, 'o');
-                                     formattedText = formattedText.replace(/ū/ig, 'u');
-                                     formattedText = formattedText.replace(/ /g, '+');
+                                     var formattedText = request.query.trim();
+                                     formattedText = formattedText.replace(/ā/ig, 'a')
+                                                                    .replace(/ē/ig, 'e')
+                                                                    .replace(/ī/ig, 'i')
+                                                                    .replace(/ō/ig, 'o')
+                                                                    .replace(/[ū\u01d6]/ig, 'u')
+                                                                    .replace(/ /g, '+');
                                      
                                      var numWords = formattedText.split("+").length;
                                      if (numWords == 2) {
                                         formattedText += "+et";
                                      }
+                                     
+                                     console.log("[" + formattedText + "]");
                                      
                                      var url = "http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + formattedText;
                                      
