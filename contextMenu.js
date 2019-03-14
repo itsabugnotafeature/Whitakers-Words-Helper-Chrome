@@ -61,3 +61,13 @@ chrome.contextMenus.onClicked.addListener(function(clickData) {
                                                   xhttp.send();
                                               }
                                           })
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+                                     for (var key in changes) {
+                                     var storageChange = changes[key];
+                                     if (key == "isEnabled" && storageChange.newValue) {
+                                     chrome.contextMenus.create(contextMenuItem);
+                                     } else {
+                                     chrome.contextMenus.remove(contextMenuItem.id);
+                                     }
+                                     }
+                                     });
