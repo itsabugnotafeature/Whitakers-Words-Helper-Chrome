@@ -3,9 +3,9 @@
   "short_name": "WWH",
   "version": "1.1",
   "description": "This extension uses the wonderful site designed by William Whitaker, to easily get detailed and accurate Latin definitions.",
-  "permissions": ["contextMenus", "http://archives.nd.edu/"],
+  "permissions": ["contextMenus", "declarativeContent", "http://archives.nd.edu/"],
   "background": {
-    "scripts": ["background.js", "contextMenu.js"],
+    "scripts": ["background.js", "contextMenu.js", "popUp.js"],
     "persistent": false
   },
   "content_scripts" : [
@@ -19,6 +19,9 @@
     "32": "images/wwh32.png",
     "48": "images/wwh48.png",
     "128": "images/wwh128.png"
+  },
+  "page_action": {
+    "default_popup": "popUp.html"
   },
   "manifest_version": 2
 }

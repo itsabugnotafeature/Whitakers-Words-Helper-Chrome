@@ -1,4 +1,4 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
+﻿// Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -43,7 +43,7 @@ chrome.runtime.onMessage.addListener(
                                      
                                             sendResponse({responseText: responseText});
                                         } else {
-                                            sendResponse({responseText: "Looks like there was a problem\nError code: " + xhttp.status});
+                                            sendResponse({responseText: "\nLooks like there was a problem\nError code: " + xhttp.status + "\n\n"});
                                         }
                                      }
                                      };

@@ -17,6 +17,8 @@ shadowRoot.append(pop_up_div);
 
 document.body.after(WWHHost);
 
+
+
 document.addEventListener("click", function(event) {
                           pop_up_div.style.visibility = 'hidden';
 });
@@ -33,10 +35,10 @@ document.addEventListener("dblclick", function(event) {
                 internal_pre.textContent = response.responseText;
                 var div_rect = pop_up_div.getBoundingClientRect();
                 if (div_rect.x + div_rect.width > document.documentElement.clientWidth) {
-                    pop_up_div.style.left = (document.documentElement.clientWidth - div_rect.width - 5).toString() + "px";
+                    pop_up_div.style.left = (document.documentElement.clientWidth - div_rect.width).toString() + "px";
                 }
                 if (div_rect.y + div_rect.height > document.documentElement.clientHeight) {
-                    pop_up_div.style.top = (document.documentElement.clientHeight - div_rect.height + window.scrollY - 5).toString() + "px";
+                    pop_up_div.style.top = (document.documentElement.clientHeight - div_rect.height + window.scrollY - 10).toString() + "px";
                 }
                 console.log("Left: " + pop_up_div.style.left + "; Top: " + pop_up_div.style.top);
             });
