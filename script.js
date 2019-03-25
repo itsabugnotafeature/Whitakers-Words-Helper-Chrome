@@ -50,15 +50,15 @@ function handleDoubleClick(event) {
             pop_up_div.style.visibility = 'visible';
             pop_up_div.style.left = event.pageX.toString() + "px";
             pop_up_div.style.top = (event.pageY + 20).toString() + "px";
-            internal_pre.textContent = "Loading Definition";
+            internal_pre.textContent = "\nLoading Definition\n\n";
             chrome.runtime.sendMessage({query: text}, function(response) {
                                        internal_pre.textContent = response.responseText;
                                        var div_rect = pop_up_div.getBoundingClientRect();
                                        if (div_rect.x + div_rect.width > document.documentElement.clientWidth) {
-                                       pop_up_div.style.left = (document.documentElement.clientWidth - div_rect.width).toString() + "px";
+                                            pop_up_div.style.left = (document.documentElement.clientWidth - div_rect.width).toString() + "px";
                                        }
                                        if (div_rect.y + div_rect.height > document.documentElement.clientHeight) {
-                                       pop_up_div.style.top = (document.documentElement.clientHeight - div_rect.height + window.scrollY - 10).toString() + "px";
+                                            pop_up_div.style.top = (document.documentElement.clientHeight - div_rect.height + window.scrollY - 10).toString() + "px";
                                        }
                                        });
         }
@@ -66,12 +66,12 @@ function handleDoubleClick(event) {
 }
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-                                     for (var key in changes) {
-                                     var storageChange = changes[key];
-                                     if (key == "isEnabled" && storageChange.newValue) {
-                                        document.addEventListener("dblclick", handleDoubleClick);
-                                     } else {
-                                        document.removeEventListener("dblclick", handleDoubleClick);
-                                     }
-                                     }
+                                         for (var key in changes) {
+                                             var storageChange = changes[key];
+                                             if (key == "isEnabled" && storageChange.newValue) {
+                                                document.addEventListener("dblclick", handleDoubleClick);
+                                             } else {
+                                                document.removeEventListener("dblclick", handleDoubleClick);
+                                             }
+                                         }
                                      });
