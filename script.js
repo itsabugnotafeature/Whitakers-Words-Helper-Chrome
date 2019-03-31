@@ -22,7 +22,7 @@ document.addEventListener("click", function(event) {
 });
 
 chrome.storage.local.get("isEnabled", function(result) {
-	if (result.isEnabled == true) {
+	if (result.isEnabled) {
 		document.addEventListener("dblclick", handleDoubleClick);
 	}
 });
