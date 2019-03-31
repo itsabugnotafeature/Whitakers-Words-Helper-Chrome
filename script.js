@@ -24,7 +24,11 @@ document.addEventListener("click", function(event) {
                           pop_up_div.style.visibility = 'hidden';
 });
 
-document.addEventListener("dblclick", handleDoubleClick);
+chrome.storage.local.get("isEnabled", function(result) {
+	if (result.key == true) {
+		document.addEventListener("dblclick", handleDoubleClick);
+	}
+});
 
 document.addEventListener("contextmenu", function(event) {
     pop_up_div.style.visibility = 'hidden';
