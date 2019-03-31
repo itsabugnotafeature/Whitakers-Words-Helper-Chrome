@@ -17,8 +17,11 @@ shadowRoot.append(pop_up_div);
 
 document.body.after(WWHHost);
 
+var eventLocation = { x: undefined, y: undefined };
+
 document.addEventListener("click", function(event) {
                           pop_up_div.style.visibility = 'hidden';
+                          setEventLocation(event);
 });
 
 chrome.storage.local.get("isEnabled", function(result) {
@@ -28,61 +31,27 @@ chrome.storage.local.get("isEnabled", function(result) {
 });
 
 document.addEventListener("contextmenu", function(event) {
-    pop_up_div.style.visibility = 'hidden';
-    pop_up_div.style.left = event.pageX.toString() + "px";
-    pop_up_div.style.top = event.pageY.toString() + "px";
+                          pop_up_div.style.visibility = 'hidden';
+                          setEventLocation(event);
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                      pop_up_div.style.visibility = 'visible';
                                      internal_pre.textContent = request.responseText;
-                                     var div_rect = pop_up_div.getBoundingClientRect();
-                                     //pop_up_div.style.left = (div_rect.x - div_rect.width / 2).toString() + "px";
-                                     //pop_up_div.style.top = (div_rect.y - div_rect.height - 15).toString() + "px";
-                                     //div_rect = pop_up_div.getBoundingClientRect();
-                                     if (div_rect.x + div_rect.width >= document.documentElement.clientWidth) {
-                                        pop_up_div.style.left = (document.documentElement.clientWidth - div_rect.width - 10).toString() + "px";
-                                     }
-                                     if (div_rect.x <= 0) {
-                                        pop_up_div.style.left = (10).toString() + "px";
-                                     }
-                                    if (div_rect.y + div_rect.height >= document.documentElement.clientHeight) {
-                                        pop_up_div.style.top = (document.documentElement.clientHeight - div_rect.height + window.scrollY - 10).toString() + "px";
-                                     }
-                                     if (div_rect.y <= 0) {
-                                        pop_up_div.style.top = (10 + window.scrollY).toString() + "px";
-                                     }
+                                     positionPopUp();
 });
 
 function handleDoubleClick(event) {
+    setEventLocation(event);
     if (window.getSelection() && document.activeElement.tagName.toLowerCase() != "input" && document.activeElement.tagName.toLowerCase() != "textarea") {
         var text = window.getSelection().toString();
         if (text != "") {
             pop_up_div.style.visibility = 'visible';
-            pop_up_div.style.left = event.pageX.toString() + "px";
-            pop_up_div.style.top = event.pageY.toString() + "px";
             internal_pre.textContent = "\nLoading Definition\n\n";
-            var div_rect = pop_up_div.getBoundingClientRect();
-            pop_up_div.style.left = (parseInt(pop_up_div.style.left) - div_rect.width / 2).toString() + "px";
-    	    pop_up_div.style.top = (parseInt(pop_up_div.style.top) - div_rect.height - 18).toString() + "px";
+            positionPopUp();
             chrome.runtime.sendMessage({query: text}, function(response) {
                                        internal_pre.textContent = response.responseText;
-                                       var div_rect = pop_up_div.getBoundingClientRect();
-                                       pop_up_div.style.left = (event.pageX - div_rect.width / 2).toString() + "px";
-                                       pop_up_div.style.top = (event.pageY - div_rect.height - 12).toString() + "px";
-                                       div_rect = pop_up_div.getBoundingClientRect();
-                                       if (div_rect.x + div_rect.width >= document.documentElement.clientWidth) {
-                                            pop_up_div.style.left = (document.documentElement.clientWidth - div_rect.width - 10).toString() + "px";
-                                       }
-                                       if (div_rect.x <= 0) {
-                                            pop_up_div.style.left = (10).toString() + "px";
-                                       }
-                                       if (div_rect.y + div_rect.height >= document.documentElement.clientHeight) {
-                                            pop_up_div.style.top = (document.documentElement.clientHeight - div_rect.height + window.scrollY - 10).toString() + "px";
-                                       }
-                                       if (div_rect.y <= 0) {
-                                            pop_up_div.style.top = (10 + window.scrollY).toString() + "px";
-                                       }
+                                       positionPopUp();
                                        });
         }
     }
@@ -98,3 +67,24 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                                              }
                                          }
                                      });
+
+function setEventLocation(event) {
+    eventLocation.x = event.pageX;
+    eventLocation.y = event.pageY;
+}
+
+function positionPopUp() {
+    var div_rect = pop_up_div.getBoundingClientRect();
+    pop_up_div.style.left = (eventLocation.x - div_rect.width / 2).toString() + "px";
+    pop_up_div.style.top = (eventLocation.y - div_rect.height - 15).toString() + "px";
+    div_rect = pop_up_div.getBoundingClientRect();
+    if (div_rect.right >= document.documentElement.clientWidth) {
+        pop_up_div.style.left = (document.documentElement.clientWidth - div_rect.width - 10).toString() + "px";
+    }
+    if (div_rect.left <= 0) {
+        pop_up_div.style.left = (10).toString() + "px";
+    }
+    if (div_rect.top < div_rect.height) {
+        pop_up_div.style.top = (eventLocation.y + 15).toString() + "px";
+    }
+}
