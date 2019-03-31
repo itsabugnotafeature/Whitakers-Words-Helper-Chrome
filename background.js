@@ -15,6 +15,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                                                     .replace(/ī/ig, 'i')
                                                                     .replace(/ō/ig, 'o')
                                                                     .replace(/[ū\u01d6]/ig, 'u')
+                                                                    .replace(/[ÿ\u0233]/ig, 'y')
                                                                     .replace(/ /g, '+');
                                      
                                      //Get around WWW weird thing with only two words

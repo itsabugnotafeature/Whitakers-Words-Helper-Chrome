@@ -52,6 +52,7 @@ function getDefs(formattedText, tabId) {
     formattedText = formattedText.replace(/ī/ig, 'i');
     formattedText = formattedText.replace(/ō/ig, 'o');
     formattedText = formattedText.replace(/ū/ig, 'u');
+    formattedText = formattedText.replace(/[ÿ\u0233]/ig, 'y')
     formattedText = formattedText.replace(/ /g, '+');
     
     var url = "http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + formattedText;
