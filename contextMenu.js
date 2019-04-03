@@ -42,6 +42,9 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 function getDefs(formattedText, tabId) {
     
+    currentQuery = formattedText;
+    var originalText = formattedText;
+    
     sendTabResponse(tabId, "\nLoading defintion...\n\n");
     
     formattedText.trim();
@@ -55,13 +58,13 @@ function getDefs(formattedText, tabId) {
     formattedText = formattedText.replace(/[ÿ\u0233]/ig, 'y')
     formattedText = formattedText.replace(/ /g, '+');
     
-    var url = "http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + formattedText;
-    
     //Deal with WWW wierd thing with only two words
     var numWords = formattedText.split("+").length;
     if (numWords == 2) {
         formattedText += "+et";
     }
+    
+    var url = "http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + formattedText;
     
     var xhttp = new XMLHttpRequest();
     
@@ -69,6 +72,10 @@ function getDefs(formattedText, tabId) {
     xhttp.responseType = "document";
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4) {
+            if (originalText != currentQuery) {
+                //Don't return results for old queries if there is a new one.
+                return
+            }
             if (xhttp.status === 200) {
                 var responseText = xhttp.responseXML.querySelector("pre").textContent;
                 
@@ -93,6 +100,9 @@ function getDefs(formattedText, tabId) {
 
 function getScans(formattedText, tabId) {
     
+    currentQuery = formattedText;
+    var originalText = formattedText;
+    
     sendTabResponse(tabId, "\nLoading scansion (this may take a while)\n\n");
     
     formattedText.trim();
@@ -108,6 +118,10 @@ function getScans(formattedText, tabId) {
     xhttp.responseType = "document";
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4) {
+            if (originalText != currentQuery) {
+                //Don't return results for old queries if there is a new one.
+                return
+            }
             if (xhttp.status === 200) {
                 var responseText = xhttp.responseXML.querySelector("div.feet").textContent;
                 

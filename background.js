@@ -6,9 +6,13 @@
 
 chrome.storage.local.set({isEnabled: true});
 
+var currentQuery = undefined;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                      //Filter out special characters
+                                     currentQuery = request.query;
                                      var formattedText = request.query.trim();
+                                     var originalText = request.query;
                                      
                                      formattedText = formattedText.replace(/ā/ig, 'a')
                                                                     .replace(/ē/ig, 'e')
@@ -32,6 +36,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                      xhttp.responseType = "document";
                                      xhttp.onreadystatechange = function () {
                                          if(xhttp.readyState === 4) {
+                                             if (originalText != currentQuery) {
+                                             //Don't return old results if there is a new query
+                                                return
+                                             }
                                              if (xhttp.status === 200) {
                                                 var responseText = xhttp.responseXML.querySelector("pre").textContent;
                                      

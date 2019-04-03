@@ -64,6 +64,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
                                                 document.addEventListener("dblclick", handleDoubleClick);
                                              } else {
                                                 document.removeEventListener("dblclick", handleDoubleClick);
+                                                pop_up_div.style.visibility = 'hidden';
                                              }
                                          }
                                      });
