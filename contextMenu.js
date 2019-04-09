@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 var contextMenuItem = {
     "id" : "getDefs",
@@ -46,13 +46,14 @@ function getDefs(formattedText, tabId) {
     formattedText.trim();
     
     //Remove special characters
-    formattedText = formattedText.replace(/ā/ig, 'a');
-    formattedText = formattedText.replace(/ē/ig, 'e');
-    formattedText = formattedText.replace(/ī/ig, 'i');
-    formattedText = formattedText.replace(/ō/ig, 'o');
-    formattedText = formattedText.replace(/ū/ig, 'u');
-    formattedText = formattedText.replace(/[ÿ\u0233]/ig, 'y')
-    formattedText = formattedText.replace(/ /g, '+');
+    formattedText = formattedText.replace(/ā/ig, 'a')
+                                .replace(/ē/ig, 'e')
+                                .replace(/ī/ig, 'i')
+                                .replace(/ō/ig, 'o')
+                                .replace(/ū/ig, 'u')
+                                .replace(/[ÿ\u0233]/ig, 'y')
+                                .replace(/[\n\t\r]/g, ' ')
+                                .replace(/ /g, '+');
     
     //Deal with WWW wierd thing with only two words
     var numWords = formattedText.split("+").length;

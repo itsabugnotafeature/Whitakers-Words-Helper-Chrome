@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 chrome.storage.local.set({isEnabled: true});
 
@@ -16,6 +16,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                                                     .replace(/ō/ig, 'o')
                                                                     .replace(/[ū\u01d6]/ig, 'u')
                                                                     .replace(/[ÿ\u0233]/ig, 'y')
+                                                                    .replace(/[\n\t\r]/g, ' ')
                                                                     .replace(/ /g, '+');
                                      
                                      //Get around WWW weird thing with only two words
