@@ -47,7 +47,7 @@ function getDefs(formattedText, tabId) {
     
     //Remove special characters
     formattedText = formattedText.replace(/ā/ig, 'a');
-    formattedText = formattedText.replace(/ē/ig, 'e');
+    formattedText = formattedText.replace(/[ē\u00EB]/ig, 'e');
     formattedText = formattedText.replace(/ī/ig, 'i');
     formattedText = formattedText.replace(/ō/ig, 'o');
     formattedText = formattedText.replace(/ū/ig, 'u');

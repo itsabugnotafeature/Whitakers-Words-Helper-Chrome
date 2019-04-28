@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                      var originalText = request.query;
                                      
                                      formattedText = formattedText.replace(/ā/ig, 'a')
-                                                                    .replace(/ē/ig, 'e')
+                                                                    .replace(/[ē\u00EB]/ig, 'e')
                                                                     .replace(/ī/ig, 'i')
                                                                     .replace(/ō/ig, 'o')
                                                                     .replace(/[ū\u01d6]/ig, 'u')
