@@ -55,18 +55,11 @@ function getDefs(formattedText, tabId) {
                                 .replace(/[\n\t\r]/g, ' ')
                                 .replace(/ /g, '+');
 
-    //Deal with WWW wierd thing with only two words
-    var numWords = formattedText.split("+").length;
-    if (numWords == 2) {
-        formattedText += "+et";
-    }
-
-    var url = "http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + formattedText;
+    var url = "https://latin-words.com/cgi-bin/translate.cgi?query=" + formattedText;
 
     var xhttp = new XMLHttpRequest();
 
     xhttp.open("GET", url, true);
-    xhttp.responseType = "document";
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4) {
             if (originalText != currentQuery) {
@@ -74,14 +67,7 @@ function getDefs(formattedText, tabId) {
                 return
             }
             if (xhttp.status === 200) {
-                var responseText = xhttp.responseXML.querySelector("pre").textContent;
-
-                //Remove inserted 'et' response
-                if (numWords == 2) {
-                    var splitText = responseText.split("\n");
-                    splitText.splice(-6, 4);
-                    responseText = splitText.join("\n");
-                }
+                var responseText = JSON.parse(xhttp.response).message;
 
                 responseText = "\n" + responseText;
 
@@ -106,12 +92,24 @@ function getScans(formattedText, tabId) {
 
     //Could URLEncode but if it ain't broke don't fix it
     formattedText = formattedText.replace(/ /g, '%20');
+    //Remove special characters
+    formattedText = formattedText.replace(/ā/ig, 'a')
+                                .replace(/ē/ig, 'e')
+                                .replace(/ī/ig, 'i')
+                                .replace(/ō/ig, 'o')
+                                .replace(/ū/ig, 'u')
+                                .replace(/[ÿ\u0233]/ig, 'y')
+                                .replace(/[\n\t\r]/g, ' ')
+                                .replace(/ /g, '+');
 
-    var url = "http://alatius.com/macronizer/?scan=hexameter&textcontent=" + formattedText;
+    var url = "https://alatius.com/macronizer/";
+
+    var postData = "scan=1&textcontent=" + formattedText;
 
     var xhttp = new XMLHttpRequest();
 
-    xhttp.open("GET", url, true);
+    xhttp.open("POST", url, true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.responseType = "document";
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4) {
@@ -131,7 +129,7 @@ function getScans(formattedText, tabId) {
             }
         }
     };
-    xhttp.send();
+    xhttp.send(postData);
 }
 
 function sendTabResponse(tabId, message) {

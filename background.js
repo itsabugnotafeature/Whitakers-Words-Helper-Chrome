@@ -19,18 +19,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                                                     .replace(/[\n\t\r]/g, ' ')
                                                                     .replace(/ /g, '+');
                                      
-                                     //Get around WWW weird thing with only two words
-                                     var numWords = formattedText.split("+").length;
-                                     if (numWords == 2) {
-                                        formattedText += "+et";
-                                     }
-                                     
-                                     var url = "http://archives.nd.edu/cgi-bin/wordz.pl?keyword=" + formattedText;
+                                     var url = "https://latin-words.com/cgi-bin/translate.cgi?query=" + formattedText;
                                      
                                      var xhttp = new XMLHttpRequest();
                                      
                                      xhttp.open("GET", url, true);
-                                     xhttp.responseType = "document";
                                      xhttp.onreadystatechange = function () {
                                          if(xhttp.readyState === 4) {
                                              if (originalText != currentQuery) {
@@ -38,14 +31,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                                                 return
                                              }
                                              if (xhttp.status === 200) {
-                                                var responseText = xhttp.responseXML.querySelector("pre").textContent;
-                                     
-                                                //Remove inserted 'et' response
-                                                if (numWords == 2) {
-                                                    var splitText = responseText.split("\n");
-                                                    splitText.splice(-6, 4);
-                                                    responseText = splitText.join("\n");
-                                                }
+                                                var responseText = JSON.parse(xhttp.response).message;
                                      
                                                 responseText = "\n" + responseText;
                                      
