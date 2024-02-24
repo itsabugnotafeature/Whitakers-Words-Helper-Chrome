@@ -17,22 +17,22 @@ function onClick(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-                          document.querySelector(".switch").style.display = "none";
-                          document.querySelector("#status").style.display = "none";
-                          chrome.storage.local.get('isEnabled', function(data) {
-                                                   var checkbox = document.querySelector(".switch input");
-                                                   var status = document.querySelector("h2#status");
-                                                   if (data.isEnabled == true) {
-                                                   status.textContent = "Enabled";
-                                                   status.style.color = "#27ae60";
-                                                   checkbox.checked = true;
-                                                   } else {
-                                                   status.textContent = "Disabled";
-                                                   status.style.color = "#e74c3c";
-                                                   checkbox.checked = false;
-                                                   }
-                                                   document.querySelector(".switch").style.display = "inline-block";
-                                                   document.querySelector("#status").style.display = "inline-block";
-                                                   });
-  document.querySelector('.switch input').addEventListener('click', onClick);
+    document.querySelector(".switch").style.display = "none";
+    document.querySelector("#status").style.display = "none";
+    chrome.storage.local.get('isEnabled', function(data) {
+        var checkbox = document.querySelector(".switch input");
+        var status = document.querySelector("h2#status");
+        if (data.isEnabled == true) {
+            status.textContent = "Enabled";
+            status.style.color = "#27ae60";
+            checkbox.checked = true;
+        } else {
+            status.textContent = "Disabled";
+            status.style.color = "#e74c3c";
+            checkbox.checked = false;
+        }
+        document.querySelector(".switch").style.display = "inline-block";
+        document.querySelector("#status").style.display = "inline-block";
+    });
+    document.querySelector('.switch input').addEventListener('click', onClick);
 });

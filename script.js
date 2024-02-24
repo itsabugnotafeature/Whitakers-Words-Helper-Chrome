@@ -20,8 +20,8 @@ document.body.after(WWHHost);
 var eventLocation = { x: undefined, y: undefined };
 
 document.addEventListener("click", function(event) {
-                          pop_up_div.style.visibility = 'hidden';
-                          setEventLocation(event);
+    pop_up_div.style.visibility = 'hidden';
+    setEventLocation(event);
 });
 
 chrome.storage.local.get("isEnabled", function(result) {
@@ -31,14 +31,14 @@ chrome.storage.local.get("isEnabled", function(result) {
 });
 
 document.addEventListener("contextmenu", function(event) {
-                          pop_up_div.style.visibility = 'hidden';
-                          setEventLocation(event);
+    pop_up_div.style.visibility = 'hidden';
+    setEventLocation(event);
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-                                     pop_up_div.style.visibility = 'visible';
-                                     internal_pre.textContent = request.responseText;
-                                     positionPopUp();
+    pop_up_div.style.visibility = 'visible';
+    internal_pre.textContent = request.responseText;
+    positionPopUp();
 });
 
 function handleDoubleClick(event) {
@@ -49,25 +49,28 @@ function handleDoubleClick(event) {
             pop_up_div.style.visibility = 'visible';
             internal_pre.textContent = "\nLoading Definition\n\n";
             positionPopUp();
-            chrome.runtime.sendMessage({query: text}, function(response) {
-                                       internal_pre.textContent = response.responseText;
-                                       positionPopUp();
-                                       });
+            chrome.runtime.sendMessage(
+                {query: text}, 
+                function(response) {
+                    internal_pre.textContent = response.responseText;
+                    positionPopUp();
+                }
+            );
         }
     }
 }
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-                                         for (var key in changes) {
-                                             var storageChange = changes[key];
-                                             if (key == "isEnabled" && storageChange.newValue) {
-                                                document.addEventListener("dblclick", handleDoubleClick);
-                                             } else {
-                                                document.removeEventListener("dblclick", handleDoubleClick);
-                                                pop_up_div.style.visibility = 'hidden';
-                                             }
-                                         }
-                                     });
+    for (var key in changes) {
+        var storageChange = changes[key];
+        if (key == "isEnabled" && storageChange.newValue) {
+            document.addEventListener("dblclick", handleDoubleClick);
+        } else {
+            document.removeEventListener("dblclick", handleDoubleClick);
+            pop_up_div.style.visibility = 'hidden';
+        }
+    }
+});
 
 function setEventLocation(event) {
     eventLocation.x = event.pageX;

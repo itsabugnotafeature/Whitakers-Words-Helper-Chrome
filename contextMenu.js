@@ -16,25 +16,25 @@ chrome.contextMenus.create(contextMenuItem);
 chrome.contextMenus.create(scanscionMenuItem);
 
 chrome.contextMenus.onClicked.addListener(function(clickData, tab) {
-                                        if (clickData.menuItemId == "getDefs" && clickData.selectionText) {
-                                          getDefs(clickData.selectionText, tab.id);
-                                        } else if (clickData.menuItemId == "getScans" && clickData.selectionText) {
-                                          getScans(clickData.selectionText, tab.id);
-                                        }
-                                    });
+    if (clickData.menuItemId == "getDefs" && clickData.selectionText) {
+        getDefs(clickData.selectionText, tab.id);
+    } else if (clickData.menuItemId == "getScans" && clickData.selectionText) {
+        getScans(clickData.selectionText, tab.id);
+    }
+});
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-                                        for (var key in changes) {
-                                            var storageChange = changes[key];
-                                            if (key == "isEnabled" && storageChange.newValue) {
-                                                chrome.contextMenus.create(contextMenuItem);
-                                                chrome.contextMenus.create(scanscionMenuItem);
-                                            } else {
-                                                chrome.contextMenus.remove(contextMenuItem.id);
-                                                chrome.contextMenus.remove(scanscionMenuItem.id);
-                                            }
-                                        }
-                                     });
+    for (var key in changes) {
+        var storageChange = changes[key];
+        if (key == "isEnabled" && storageChange.newValue) {
+            chrome.contextMenus.create(contextMenuItem);
+            chrome.contextMenus.create(scanscionMenuItem);
+        } else {
+            chrome.contextMenus.remove(contextMenuItem.id);
+            chrome.contextMenus.remove(scanscionMenuItem.id);
+        }
+    }
+});
 
 function getDefs(formattedText, tabId) {
 
