@@ -1,47 +1,47 @@
-'use strict';
 
-chrome.storage.local.set({isEnabled: true});
+const modules = {
+    definition: {
+        handler: handleDefinitionsQuery
+    },
+    scanscion: {
+        
+    }
+}
 
-var currentQuery = undefined;
+import { fetchDefinitions } from "./definitions.js";
+import { Response } from "./response.js";
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    //Filter out special characters
-    currentQuery = request.query;
-    var formattedText = request.query.trim();
-    var originalText = request.query;
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+    if (['install', 'update'].includes(reason)) {
+        chrome.storage.local.set({
+            enabled: true
+        });
+    }
+});
 
-    formattedText = formattedText.replace(/ā/ig, 'a')
-                                    .replace(/[ē\u00EB]/ig, 'e')
-                                    .replace(/ī/ig, 'i')
-                                    .replace(/ō/ig, 'o')
-                                    .replace(/[ū\u01d6]/ig, 'u')
-                                    .replace(/[ÿ\u0233]/ig, 'y')
-                                    .replace(/[\n\t\r]/g, ' ')
-                                    .replace(/ /g, '+');
+// Send translation/scansion to content script via messaging
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-    var url = "https://latin-words.com/cgi-bin/translate.cgi?query=" + formattedText;
+    const queryType = message.queryType;
+    let queryText = message.query.trim();
+    // Sanitize string, strip out diacritics and non letter characters
+    queryText = queryText.replace(/ā/ig, 'a')
+        .replace(/[ē\u00EB]/ig, 'e')
+        .replace(/ī/ig, 'i')
+        .replace(/ō/ig, 'o')
+        .replace(/[ū\u01d6]/ig, 'u')
+        .replace(/[ÿ\u0233]/ig, 'y')
+        .replace(/[\n\t\r]/g, ' ')
+        .replace(/[^a-zA-Z]/, '');
 
-    var xhttp = new XMLHttpRequest();
+    const handler = modules[queryType]?.handler;
+    if (handler === undefined) sendResponse(Response('error', 'Looks like something went wrong...try again in a few minutes'));
+    handler(queryText, sendResponse);
 
-    xhttp.open("GET", url, true);
-    xhttp.onreadystatechange = function () {
-        if(xhttp.readyState === 4) {
-            if (originalText != currentQuery) {
-                //Don't return old results if there is a new query
-                return
-            }
-            if (xhttp.status === 200) {
-                var responseText = JSON.parse(xhttp.response).message;
-
-                responseText = "\n" + responseText;
-
-                sendResponse({responseText: responseText});
-            } else {
-                sendResponse({responseText: "Looks like there was a problem"});
-                console.log("XMLHttpRequest failed with error code: " + xhttp.status);
-            }
-        }
-    };
-    xhttp.send();
     return true;
 });
+
+async function handleDefinitionsQuery(query, sendResponse) {
+    const response = await fetchDefinitions(query);
+    sendResponse(response);
+}

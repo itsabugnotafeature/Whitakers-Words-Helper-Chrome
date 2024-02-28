@@ -1,0 +1,8 @@
+#wwh-container {
+    border-radius: 15px;
+    border: 2px solid rgb(86, 84, 84);
+    background-color: bisque;
+    font-family: monospace;
+    padding: 0px 10px;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.5);
+}
