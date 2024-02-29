@@ -64,8 +64,8 @@
         const height = wwhContainer.scrollHeight;
         const screenHeight = document.documentElement.clientHeight;
         const screenWidth = document.documentElement.clientWidth;
-        let x = (screenWidth / 2) - (width / 2);
-        let y = (screenHeight / 2) - (height / 2);
+        let x = Math.max(WIDGET_PADDING, (screenWidth / 2) - (width / 2));
+        let y = Math.max(WIDGET_PADDING, (screenHeight / 2) - (height / 2));
         applyTopLeft(wwhContainer, x, y);
     }
 
@@ -77,7 +77,8 @@
 
     async function handleUserEvent(event, requestType) {
         const { enabled } = await chrome.storage.local.get('enabled');
-        if (!enabled) return;
+        const queryText = window.getSelection().toString().trim();
+        if (!enabled || queryText === '') return;
         switch (requestType) {
             case 'definitions':
                 displayMessage('Loading definitions...', event);
@@ -87,6 +88,10 @@
                 break;
         }
         const { status, message } = await chrome.runtime.sendMessage({ queryType: requestType, queryText: window.getSelection().toString() });
-        displayMessage(message, event);
+        if (status === 'ignore') {
+            hide();
+        } else {
+            displayMessage(message, event);
+        }
     }
 })();

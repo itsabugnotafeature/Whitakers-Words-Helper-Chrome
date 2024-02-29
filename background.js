@@ -37,6 +37,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Sanitize string, strip out diacritics and non letter characters
         queryText = sanitizeString(queryText);
         const handler = modules[queryType]?.handler;
+        if (queryText === '') sendResponse(Response('ignore', 'Nothing selected'));
         if (handler === undefined) sendResponse(Response('error', 'Looks like something went wrong'));
         handler(queryText, sendResponse);
     }
