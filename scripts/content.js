@@ -86,7 +86,7 @@
                 displayMessage('Loading scanscion, this may take a few minutes...', event);
                 break;
         }
-        const { status, message } = await chrome.runtime.sendMessage({ queryType: requestType, query: window.getSelection().toString() });
+        const { status, message } = await chrome.runtime.sendMessage({ queryType: requestType, queryText: window.getSelection().toString() });
         displayMessage(message, event);
     }
 })();

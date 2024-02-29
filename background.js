@@ -19,29 +19,27 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
         chrome.storage.local.set({
             enabled: true
         });
-        
-        for (let moduleName in modules) {
-            chrome.contextMenus.create({
-                title:  modules[moduleName].menuItemTitle,
-                id: moduleName,
-                contexts: ['all'] 
-            });
-        }
+        addMenuItems();
     }
 });
 
 // Send translation/scansion to content script via messaging
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-
     const queryType = message.queryType;
-    let queryText = message.query.trim();
-    // Sanitize string, strip out diacritics and non letter characters
-    queryText = sanitizeString(queryText);
-
-    const handler = modules[queryType]?.handler;
-    if (handler === undefined) sendResponse(Response('error', 'Looks like something went wrong'));
-    handler(queryText, sendResponse);
-
+    let queryText = message.queryText.trim();
+    if (queryType === 'context-menu') {
+        if (queryText === 'remove') {
+            removeMenuItems();
+        } else {
+            addMenuItems();
+        }
+    } else {
+        // Sanitize string, strip out diacritics and non letter characters
+        queryText = sanitizeString(queryText);
+        const handler = modules[queryType]?.handler;
+        if (handler === undefined) sendResponse(Response('error', 'Looks like something went wrong'));
+        handler(queryText, sendResponse);
+    }
     return true;
 });
 
@@ -67,5 +65,19 @@ function sanitizeString(str) {
         .replace(/[ū\u01d6]/ig, 'u')
         .replace(/[ÿ\u0233]/ig, 'y')
         .replace(/[\n\t\r]/g, ' ')
-        .replace(/[^a-zA-Z ]/g, '');
+        .replace(/[^a-zA-Z  ]/g, '');
+}
+
+function addMenuItems() {
+    for (let moduleName in modules) {
+        chrome.contextMenus.create({
+            title:  modules[moduleName].menuItemTitle,
+            id: moduleName,
+            contexts: ['all'] 
+        });
+    }
+}
+
+function removeMenuItems() {
+    chrome.contextMenus.removeAll();
 }
