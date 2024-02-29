@@ -2,8 +2,10 @@ import { fetchDefinitions } from "./definitions.js";
 import { fetchScanscion } from "./scanscion.js";
 import { Response } from "./response.js";
 import { Request } from "./request.js";
+import { handleSettingsChange } from "./settings.js";
+import { addMenuItems } from "./menu.js";
 
-const modules = {
+export const modules = {
     definitions: {
         handler: handleDefinitionsQuery,
         menuItemTitle: 'Get definitions',
@@ -14,10 +16,13 @@ const modules = {
     }
 };
 
+chrome.storage.local.onChanged.addListener(handleSettingsChange);
+
 chrome.runtime.onInstalled.addListener(({ reason }) => {
     if (['install', 'update'].includes(reason)) {
         chrome.storage.local.set({
-            enabled: true
+            enabled: true,
+            definitionsOnly: false
         });
         addMenuItems();
     }
@@ -26,16 +31,14 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
 // Send translation/scansion to content script via messaging
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const queryType = message.queryType;
-    let queryText = message.queryText.trim();
-    if (queryType === 'context-menu') {
-        if (queryText === 'remove') {
-            removeMenuItems();
-        } else {
-            addMenuItems();
+    let queryText = message.queryText;
+    if (queryType === 'settings') {
+        if (queryText === 'changed') {
+            handleSettingsChange()
         }
     } else {
         // Sanitize string, strip out diacritics and non letter characters
-        queryText = sanitizeString(queryText);
+        queryText = sanitizeString(queryText.trim());
         const handler = modules[queryType]?.handler;
         if (queryText === '') sendResponse(Response('ignore', 'Nothing selected'));
         if (handler === undefined) sendResponse(Response('error', 'Looks like something went wrong'));
@@ -67,18 +70,4 @@ function sanitizeString(str) {
         .replace(/[ÿ\u0233]/ig, 'y')
         .replace(/[\n\t\r]/g, ' ')
         .replace(/[^a-zA-Z  ]/g, '');
-}
-
-function addMenuItems() {
-    for (let moduleName in modules) {
-        chrome.contextMenus.create({
-            title:  modules[moduleName].menuItemTitle,
-            id: moduleName,
-            contexts: ['all'] 
-        });
-    }
-}
-
-function removeMenuItems() {
-    chrome.contextMenus.removeAll();
 }

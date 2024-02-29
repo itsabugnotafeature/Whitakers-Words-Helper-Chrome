@@ -45,30 +45,30 @@ body {
     border-radius: 50%;
 }
 
-#status {
+.status {
     transition: .4s;
 }
 
-div#enable-block.enable #status {
+div.block.on .status {
     color: #27ae60;
 }
 
-div#enable-block.disable #status {
+div.block.off .status {
     color: #e74c3c;
 }
 
-div#enable-block.enable .slider {
+div.block.on .slider {
     background-color: #27ae60;
 }
 
-div#enable-block.enable .slider:before {
+div.block.on .slider:before {
     transform: translateX(44px);
 }
 
-div#enable-block.disable .slider {
+div.block.off .slider {
     background-color: #e74c3c;
 }
 
-div#enable-block.disable .slider:before {
+div.block.off .slider:before {
     transform: translateX(0px);
 }

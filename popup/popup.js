@@ -1,38 +1,41 @@
-(() => {
-    document.addEventListener('DOMContentLoaded', async () => {
-        const { enabled } = await chrome.storage.local.get('enabled');
-        const enableBlock = document.querySelector("#enable-block");
-        const status = document.querySelector("#enable-block #status");
+const enable = makeStateChanger(true, 'off', 'on', 'Enabled');
+const disable = makeStateChanger(false, 'on', 'off', 'Disabled');
 
-        if (enabled) {
-            enable();
-        } else {
-            disable();
-        }
+document.addEventListener('DOMContentLoaded', async () => {
+    const settings = await chrome.storage.local.get(['enabled', 'definitionsOnly']);
 
-        enableBlock.addEventListener('click', async () => {
-            const { enabled } = await chrome.storage.local.get('enabled');
-            if (enabled) {
-                disable();
-            } else {
-                enable();
-            }
+    for (let key in settings) {
+        const block = document.querySelector('div#' + key);
+        block.addEventListener('click', () => {
+            clickHandler(key);
+            return true;
         });
-
-        function enable() {
-            chrome.storage.local.set({ enabled: true });
-            enableBlock.classList.remove('disable');
-            enableBlock.classList.add('enable');
-            status.textContent = "Enabled";
-            chrome.runtime.sendMessage({ queryType: 'context-menu', queryText: 'add' });
+        if (settings[key]) {
+            enable(key);
+        } else {
+            disable(key);
         }
+    }
+});
 
-        function disable() {
-            chrome.storage.local.set({ enabled: false });
-            enableBlock.classList.remove('enable');
-            enableBlock.classList.add('disable');
-            status.textContent = "Disabled";
-            chrome.runtime.sendMessage({ queryType: 'context-menu', queryText: 'remove' });
-        }
-    });
-})();
+async function clickHandler(key) {
+    const { enabled } = await chrome.storage.local.get(key);
+    if (enabled) {
+        disable(key);
+    } else {
+        enable(key);
+    }
+}
+
+function makeStateChanger(value, oldClass, newClass, statusText) {
+    return (key) => {
+        const setting = {};
+        const block = document.querySelector('div#' + key);
+        const status = document.querySelector('div#' + key + ' .status');
+        setting[key] = value;
+        chrome.storage.local.set(setting);
+        block.classList.remove(oldClass);
+        block.classList.add(newClass);
+        status.textContent = statusText;
+    }
+}

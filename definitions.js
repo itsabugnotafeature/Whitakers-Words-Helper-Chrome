@@ -9,6 +9,16 @@ export const fetchDefinitions = async (queryText) => {
     if (status !== 'ok') {
         return Response('error', 'Looks like something went wrong');
     } else {
-        return Response('ok', message.trim());
+        const { definitionsOnly } = await chrome.storage.local.get('definitionsOnly');
+        let processedMessage = message.trim();
+        if (definitionsOnly) {
+            let regex = /(TACKON.*\n|\[[a-zA-Z]+?\].*\n)(.*)/g;
+            let match, output = [];
+            while (match = regex.exec(processedMessage)) {
+                output.push(match[2]);
+            }
+            processedMessage = output.join('\n');
+        }
+        return Response('ok', processedMessage);
     }
 };
