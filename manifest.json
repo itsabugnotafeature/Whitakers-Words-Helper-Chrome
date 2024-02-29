@@ -12,7 +12,11 @@
   },
   "permissions": [
     "storage",
-    "contextMenus"
+    "contextMenus",
+    "scripting"
+  ],
+  "host_permissions": [
+
   ],
   "content_scripts": [
     {

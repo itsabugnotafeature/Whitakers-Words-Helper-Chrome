@@ -1,0 +1,1 @@
+export const Request = (type) => { return { type: type } };
