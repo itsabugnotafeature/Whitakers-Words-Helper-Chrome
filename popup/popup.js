@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function clickHandler(key) {
-    const { enabled } = await chrome.storage.local.get(key);
+    const result = await chrome.storage.local.get(key);
+    const enabled= result[key];
     if (enabled) {
         disable(key);
     } else {
