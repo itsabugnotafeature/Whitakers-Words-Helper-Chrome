@@ -3,7 +3,7 @@
     const WIDGET_PADDING = 15;
     const CURSOR_PADDING = 30;
 
-    const wwhRoot = div({ id: 'wwh-root' });
+    const wwhRoot = div({ id: 'wwh-root', style: 'position: relative; z-index: 1000' });
     document.body.appendChild(wwhRoot);
     const widgetShadow = wwhRoot.attachShadow({ mode: 'closed' });
     const wwhContent = makeElement('pre', { id: 'wwh-content' });
